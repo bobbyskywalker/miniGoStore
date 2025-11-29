@@ -9,19 +9,12 @@ import (
 func ParseCommand(cli client.Client, cmd []byte) {
 	cmdStr := strings.TrimSpace(string(cmd))
 
-	/* TODO: tokenize and parse
-	 * implement a strategy pattern for this */
+	tokens := strings.Split(cmdStr, " ")
+	name := tokens[0]
 
-	switch cmdStr {
-	case "PING":
-		executor.SendMessage(cli.Conn, "PONG")
-	case "SET":
-	case "GET":
-	case "GETEX":
-	case "DEL":
-	case "EXISTS":
-	case "TTL":
-	case "QUIT":
-	default:
+	if handler, ok := executor.Commands[name]; ok {
+		handler.Execute(cli, tokens)
+		return
 	}
+	executor.SendMessage(cli.Conn, "ERR: unknown command")
 }
