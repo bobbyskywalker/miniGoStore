@@ -20,3 +20,11 @@ func NewStore() *Store {
 		data: make(map[string]ValueEntry),
 	}
 }
+
+func (s *Store) Get(key string) (ValueEntry, bool) {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+
+	v, ok := s.data[key]
+	return v, ok
+}
