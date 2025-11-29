@@ -1,9 +1,12 @@
 package executor
 
-import "miniGoStore/internal/client"
+import (
+	"miniGoStore/internal/client"
+	"miniGoStore/internal/store"
+)
 
 type Command interface {
-	Execute(cli client.Client, args []string)
+	Execute(cli client.Client, args []string, store *store.Store)
 }
 
 var Commands = map[string]Command{

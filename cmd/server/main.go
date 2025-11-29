@@ -20,5 +20,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	server.StartServ(port)
+	s := server.NewServer()
+	s.StartServ(port)
 }

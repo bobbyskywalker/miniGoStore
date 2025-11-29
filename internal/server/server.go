@@ -1,6 +1,7 @@
 package server
 
 import (
+	"io"
 	"log"
 	"miniGoStore/internal/client"
 	"miniGoStore/internal/parser"
@@ -10,10 +11,17 @@ import (
 
 type Server struct {
 	numClients int32
-	storage    store.Store
+	storage    *store.Store
 }
 
-func StartServ(port string) {
+func NewServer() *Server {
+	return &Server{
+		numClients: 0,
+		storage:    store.NewStore(),
+	}
+}
+
+func (s *Server) StartServ(port string) {
 	listener, err := net.Listen("tcp", ("localhost:" + port))
 	if err != nil {
 		log.Println("Error:", err)
@@ -25,15 +33,16 @@ func StartServ(port string) {
 
 	for {
 		conn, err := listener.Accept()
+		s.numClients++
 		if err != nil {
 			log.Println("Error:", err)
 			continue
 		}
-		go handleClient(conn)
+		go s.handleClient(conn)
 	}
 }
 
-func handleClient(conn net.Conn) {
+func (s *Server) handleClient(conn net.Conn) {
 	defer conn.Close()
 
 	cli := client.Client{Conn: conn, Id: client.GenerateClientId()}
@@ -43,10 +52,15 @@ func handleClient(conn net.Conn) {
 	for {
 		nbytes, err := conn.Read(buf)
 		if err != nil {
+			if err == io.EOF {
+				log.Printf("Client %s disconnected\n", cli.Id)
+				s.numClients--
+				return
+			}
 			log.Println("Error:", err)
 			return
 		}
-		parser.ParseCommand(cli, buf[:nbytes])
+		parser.ParseCommand(cli, buf[:nbytes], s.storage)
 		log.Printf(cli.Id+": %s\n", buf[:nbytes])
 	}
 }

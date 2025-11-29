@@ -14,3 +14,9 @@ type ValueEntry struct {
 	Value     []byte
 	ExpiresAt time.Time
 }
+
+func NewStore() *Store {
+	return &Store{
+		data: make(map[string]ValueEntry),
+	}
+}
