@@ -4,11 +4,13 @@ import (
 	"log"
 	"miniGoStore/internal/client"
 	"miniGoStore/internal/parser"
+	"miniGoStore/internal/store"
 	"net"
 )
 
 type Server struct {
 	numClients int32
+	storage    store.Store
 }
 
 func StartServ(port string) {
