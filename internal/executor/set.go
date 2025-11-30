@@ -41,8 +41,7 @@ func (SetCommand) Execute(cli client.Client, args []string, store *store.Store) 
 	key = args[1]
 	val = []byte(args[2])
 
-	i := 3
-	for i < len(args) {
+	for i := 3; i < len(args); i++ {
 		switch args[i] {
 		case "NX":
 			setOnNonExistent = true
@@ -64,5 +63,6 @@ func (SetCommand) Execute(cli client.Client, args []string, store *store.Store) 
 			retrievePrevious = true
 		}
 	}
-
+	v := store.Set(key, val, setOnExistent, setOnNonExistent, ttl, retrievePrevious)
+	SendMessage(cli.Conn, string(v))
 }

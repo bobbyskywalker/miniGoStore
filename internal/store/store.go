@@ -29,8 +29,44 @@ func (s *Store) Get(key string) (ValueEntry, bool) {
 	return v, ok
 }
 
-func (s *Store) Set(key string, value []byte) {
+func (s *Store) Set(
+	key string,
+	value []byte,
+	setOnExistent bool,
+	setOnNonExistent bool,
+	ttl *time.Time,
+	retrievePrevious bool,
+) []byte {
+
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
-	// todo
+
+	oldEntry, exists := s.data[key]
+	var oldValue []byte
+	if exists {
+		oldValue = oldEntry.Value
+	}
+
+	if setOnNonExistent && exists {
+		return []byte("(nil)")
+	}
+
+	if setOnExistent && !exists {
+		return []byte("(nil)")
+	}
+
+	entry := ValueEntry{Value: value}
+	if ttl != nil {
+		entry.ExpiresAt = *ttl
+	}
+	s.data[key] = entry
+
+	if retrievePrevious {
+		if oldValue == nil {
+			return []byte("(nil)")
+		}
+		return oldValue
+	}
+
+	return []byte("OK")
 }
