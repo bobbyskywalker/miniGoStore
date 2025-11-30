@@ -20,6 +20,7 @@ func (GetCommand) Execute(cli client.Client, args []string, store *store.Store) 
 	if !ok {
 		log.Printf("Value for key: %s not found", key)
 		SendMessage(cli.Conn, "(nil)")
+		return
 	}
 	SendMessage(cli.Conn, string(value.Value))
 }

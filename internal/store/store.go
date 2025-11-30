@@ -28,3 +28,9 @@ func (s *Store) Get(key string) (ValueEntry, bool) {
 	v, ok := s.data[key]
 	return v, ok
 }
+
+func (s *Store) Set(key string, value []byte) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	// todo
+}
