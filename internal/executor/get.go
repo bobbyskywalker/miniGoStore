@@ -3,12 +3,17 @@ package executor
 import (
 	"log"
 	"miniGoStore/internal/client"
+	"miniGoStore/internal/errors"
 	"miniGoStore/internal/store"
 )
 
 type GetCommand struct{}
 
 func (GetCommand) Execute(cli client.Client, args []string, store *store.Store) {
+	if len(args) != 2 {
+		SendMessage(cli.Conn, errors.InvalidArgs.Error())
+		return
+	}
 	key := args[1]
 	log.Println("Retrieving value for key: " + key + " for client: " + cli.Id)
 	value, ok := store.Get(key)
