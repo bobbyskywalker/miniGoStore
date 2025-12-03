@@ -3,7 +3,7 @@ package parser
 import (
 	"miniGoStore/internal/client"
 	"miniGoStore/internal/executor"
-	"miniGoStore/internal/server_replies/errors"
+	"miniGoStore/internal/replies"
 	"miniGoStore/internal/store"
 	"strings"
 )
@@ -18,5 +18,5 @@ func ParseCommand(cli client.Client, cmd []byte, store *store.Store) {
 		handler.Execute(cli, tokens, store)
 		return
 	}
-	executor.SendMessage(cli.Conn, errors.UnknownCommand.Error())
+	executor.SendMessage(cli.Conn, replies.UnknownCommand.Error())
 }

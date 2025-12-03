@@ -2,7 +2,7 @@ package executor
 
 import (
 	"miniGoStore/internal/client"
-	"miniGoStore/internal/server_replies/errors"
+	"miniGoStore/internal/replies"
 	"miniGoStore/internal/store"
 	"strconv"
 	"time"
@@ -12,12 +12,12 @@ type SetCommand struct{}
 
 func parsePassedTtl(i int, args []string, cli client.Client, result **time.Time, unit time.Duration) bool {
 	if i+1 >= len(args) {
-		SendMessage(cli.Conn, errors.InvalidArgs.Error())
+		SendMessage(cli.Conn, replies.InvalidArgs.Error())
 		return false
 	}
 	nUnits, err := strconv.Atoi(args[i+1])
 	if err != nil {
-		SendMessage(cli.Conn, errors.InvalidArgs.Error())
+		SendMessage(cli.Conn, replies.InvalidArgs.Error())
 		return false
 	}
 	t := time.Now().Add(time.Duration(nUnits) * unit)
@@ -34,7 +34,7 @@ func (SetCommand) Execute(cli client.Client, args []string, store *store.Store) 
 	var retrievePrevious = false
 
 	if len(args) < 3 {
-		SendMessage(cli.Conn, errors.InvalidArgs.Error())
+		SendMessage(cli.Conn, replies.InvalidArgs.Error())
 		return
 	}
 

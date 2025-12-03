@@ -1,7 +1,7 @@
 package store
 
 import (
-	server_replies "miniGoStore/internal/server_replies/replies"
+	"miniGoStore/internal/replies"
 	"sync"
 	"time"
 )
@@ -52,11 +52,11 @@ func (s *Store) Set(
 	}
 
 	if setOnNonExistent && exists {
-		return []byte(server_replies.SetFailReply)
+		return []byte(replies.SetFailReply)
 	}
 
 	if setOnExistent && !exists {
-		return []byte(server_replies.SetFailReply)
+		return []byte(replies.SetFailReply)
 	}
 
 	entry := ValueEntry{Value: value}
@@ -72,10 +72,10 @@ func (s *Store) Set(
 
 	if retrievePrevious {
 		if oldValue == nil {
-			return []byte(server_replies.SetFailReply)
+			return []byte(replies.SetFailReply)
 		}
 		return oldValue
 	}
 
-	return []byte(server_replies.SetSuccessReply)
+	return []byte(replies.SetSuccessReply)
 }

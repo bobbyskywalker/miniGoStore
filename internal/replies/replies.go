@@ -1,4 +1,4 @@
-package server_replies
+package replies
 
 const (
 	PongReply       = "String"
