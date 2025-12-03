@@ -29,6 +29,8 @@ func (s *Server) StartServ(port string) {
 	}
 	defer listener.Close()
 
+	s.storage.StartCleaner()
+
 	log.Println("miniGoStore Server is listening on port " + port)
 
 	for {

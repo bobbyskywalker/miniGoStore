@@ -6,18 +6,21 @@ import (
 )
 
 type Store struct {
-	mutex sync.RWMutex
-	data  map[string]ValueEntry
+	mutex   sync.RWMutex
+	data    map[string]ValueEntry
+	ttlKeys map[string]struct{}
 }
 
 type ValueEntry struct {
 	Value     []byte
 	ExpiresAt time.Time
+	HasExpiry bool
 }
 
 func NewStore() *Store {
 	return &Store{
-		data: make(map[string]ValueEntry),
+		data:    make(map[string]ValueEntry),
+		ttlKeys: make(map[string]struct{}),
 	}
 }
 
@@ -58,6 +61,11 @@ func (s *Store) Set(
 	entry := ValueEntry{Value: value}
 	if ttl != nil {
 		entry.ExpiresAt = *ttl
+		entry.HasExpiry = true
+		s.ttlKeys[key] = struct{}{}
+	} else {
+		entry.HasExpiry = false
+		delete(s.ttlKeys, key)
 	}
 	s.data[key] = entry
 
