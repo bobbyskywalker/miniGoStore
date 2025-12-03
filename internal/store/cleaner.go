@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+const NumKeysToClean = 10
+
 func (s *Store) StartCleaner() {
 	go func() {
 		log.Println("Cleaner routine started")
@@ -14,7 +16,7 @@ func (s *Store) StartCleaner() {
 		for range ticker.C {
 			s.mutex.Lock()
 
-			for i := 0; i < 10; i++ {
+			for i := 0; i < NumKeysToClean; i++ {
 				if len(s.ttlKeys) == 0 {
 					break
 				}

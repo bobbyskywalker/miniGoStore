@@ -2,8 +2,8 @@ package parser
 
 import (
 	"miniGoStore/internal/client"
-	"miniGoStore/internal/errors"
 	"miniGoStore/internal/executor"
+	"miniGoStore/internal/server_replies/errors"
 	"miniGoStore/internal/store"
 	"strings"
 )

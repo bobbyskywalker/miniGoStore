@@ -2,7 +2,7 @@ package executor
 
 import (
 	"miniGoStore/internal/client"
-	"miniGoStore/internal/errors"
+	"miniGoStore/internal/server_replies/errors"
 	"miniGoStore/internal/store"
 	"strconv"
 	"time"

@@ -7,7 +7,10 @@ import (
 	"miniGoStore/internal/parser"
 	"miniGoStore/internal/store"
 	"net"
+	"sync/atomic"
 )
+
+const MsgBufSize = 1024
 
 type Server struct {
 	numClients int32
@@ -35,7 +38,7 @@ func (s *Server) StartServ(port string) {
 
 	for {
 		conn, err := listener.Accept()
-		s.numClients++
+		atomic.AddInt32(&s.numClients, 1)
 		if err != nil {
 			log.Println("Error:", err)
 			continue
@@ -49,14 +52,14 @@ func (s *Server) handleClient(conn net.Conn) {
 
 	cli := client.Client{Conn: conn, Id: client.GenerateClientId()}
 	log.Println("Client " + cli.Id + " connected")
-	buf := make([]byte, 1024)
+	buf := make([]byte, MsgBufSize)
 
 	for {
 		nbytes, err := conn.Read(buf)
 		if err != nil {
 			if err == io.EOF {
 				log.Printf("Client %s disconnected\n", cli.Id)
-				s.numClients--
+				atomic.AddInt32(&s.numClients, -1)
 				return
 			}
 			log.Println("Error:", err)

@@ -3,7 +3,7 @@ package executor
 import (
 	"log"
 	"miniGoStore/internal/client"
-	"miniGoStore/internal/errors"
+	"miniGoStore/internal/server_replies/errors"
 	"miniGoStore/internal/store"
 )
 
