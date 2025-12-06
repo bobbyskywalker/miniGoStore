@@ -81,9 +81,29 @@ func (s *Store) Set(
 }
 
 func (s *Store) Exists(key string) int {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+
 	_, ok := s.data[key]
 	if ok {
 		return 1
 	}
 	return 0
+}
+
+func (s *Store) Del(keys []string) int {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	totalDeleted := 0
+
+	for _, key := range keys {
+		_, ok := s.data[key]
+		if ok {
+			delete(s.data, key)
+			delete(s.ttlKeys, key)
+			totalDeleted++
+		}
+	}
+	return totalDeleted
 }
