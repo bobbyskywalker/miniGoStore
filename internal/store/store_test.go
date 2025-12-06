@@ -212,3 +212,17 @@ func TestExists_ReturnsCorrectFlag(t *testing.T) {
 		t.Fatalf("exists should return 0 for non-existent key in store")
 	}
 }
+
+func TestDel_DeletesExistentKeys(t *testing.T) {
+	store := NewStore()
+
+	store.data["key"] = ValueEntry{}
+	store.data["abc"] = ValueEntry{}
+
+	keys := []string{"key", "abc", "ooo"}
+
+	numDel := store.Del(keys)
+	if numDel != 2 {
+		t.Fatalf("del should delete two existent keys")
+	}
+}
