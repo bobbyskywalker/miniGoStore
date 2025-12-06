@@ -1,7 +1,7 @@
 package replies
 
 const (
-	PongReply       = "String"
+	PongReply       = "PONG"
 	SetSuccessReply = "OK"
 	SetFailReply    = "(nil)"
 )
