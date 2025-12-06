@@ -79,3 +79,11 @@ func (s *Store) Set(
 
 	return []byte(replies.SetSuccessReply)
 }
+
+func (s *Store) Exists(key string) int {
+	_, ok := s.data[key]
+	if ok {
+		return 1
+	}
+	return 0
+}
