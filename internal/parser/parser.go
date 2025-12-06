@@ -12,7 +12,7 @@ func ParseCommand(cli client.Client, cmd []byte, store *store.Store) {
 	cmdStr := strings.TrimSpace(string(cmd))
 
 	tokens := strings.Split(cmdStr, " ")
-	name := tokens[0]
+	name := strings.ToUpper(tokens[0])
 
 	if handler, ok := executor.Commands[name]; ok {
 		handler.Execute(cli, tokens, store)
