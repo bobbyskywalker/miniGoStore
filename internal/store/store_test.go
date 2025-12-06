@@ -196,3 +196,19 @@ func TestSet_RetrievePrevious_WithPrevious_ReturnsOldValueAndStoresNew(t *testin
 		t.Fatalf("expected value %q after overwrite, got %q", "new", entry.Value)
 	}
 }
+
+func TestExists_ReturnsCorrectFlag(t *testing.T) {
+	store := NewStore()
+
+	store.data["key"] = ValueEntry{}
+
+	exists := store.Exists("key")
+	if exists == 0 {
+		t.Fatalf("exists should return 1 for existent key in store")
+	}
+
+	exists = store.Exists("key1")
+	if exists == 1 {
+		t.Fatalf("exists should return 0 for non-existent key in store")
+	}
+}
