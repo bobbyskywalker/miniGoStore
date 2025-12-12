@@ -5,6 +5,7 @@ type ErrorCode int
 const (
 	ErrUnknownCommand ErrorCode = iota
 	ErrInvalidArgs
+	ErrSyntaxError
 )
 
 type AppError struct {
@@ -25,5 +26,10 @@ var (
 	InvalidArgs = &AppError{
 		Code:    ErrInvalidArgs,
 		Message: "ERR: invalid arguments",
+	}
+
+	SyntaxError = &AppError{
+		Code:    ErrSyntaxError,
+		Message: "ERR: syntax error",
 	}
 )

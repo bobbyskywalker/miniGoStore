@@ -1,6 +1,7 @@
 package store
 
 import (
+	"log"
 	"miniGoStore/internal/replies"
 	"sync"
 	"time"
@@ -78,6 +79,28 @@ func (s *Store) Set(
 	}
 
 	return []byte(replies.SetSuccessReply)
+}
+
+func (s *Store) SetEx(key string, ttl *time.Time, persist bool) (ValueEntry, bool) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	oldEntry, exists := s.data[key]
+
+	if exists && ttl != nil {
+		oldEntry.ExpiresAt = *ttl
+		oldEntry.HasExpiry = true
+		s.ttlKeys[key] = struct{}{}
+		log.Printf("Set new expiration time for key: %s\n", key)
+	}
+	if exists && persist {
+		oldEntry.HasExpiry = false
+		delete(s.ttlKeys, key)
+		log.Printf("Removed expiration date for key: %s\n", key)
+	}
+	s.data[key] = oldEntry
+
+	return oldEntry, exists
 }
 
 func (s *Store) Exists(key string) int {

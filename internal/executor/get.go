@@ -19,7 +19,7 @@ func (GetCommand) Execute(cli client.Client, args []string, store *store.Store) 
 	value, ok := store.Get(key)
 	if !ok {
 		log.Printf("Value for key: %s not found", key)
-		SendMessage(cli.Conn, "(nil)")
+		SendMessage(cli.Conn, replies.NotFoundReply)
 		return
 	}
 	SendMessage(cli.Conn, string(value.Value))
