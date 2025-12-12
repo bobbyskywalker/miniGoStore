@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"io"
 	"log"
 	"miniGoStore/internal/client"
@@ -57,7 +58,7 @@ func (s *Server) handleClient(conn net.Conn) {
 	for {
 		nbytes, err := conn.Read(buf)
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF || errors.Is(err, net.ErrClosed) {
 				log.Printf("Client %s disconnected\n", cli.Id)
 				atomic.AddInt32(&s.numClients, -1)
 				return
