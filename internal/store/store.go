@@ -130,3 +130,18 @@ func (s *Store) Del(keys []string) int {
 	}
 	return totalDeleted
 }
+
+func (s *Store) CheckTtl(key string) int {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+
+	v, ok := s.data[key]
+	if !ok {
+		return -2
+	}
+	if !v.HasExpiry {
+		return -1
+	}
+
+	return v.ExpiresAt.Second() - time.Now().Second()
+}
