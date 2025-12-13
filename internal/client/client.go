@@ -11,6 +11,13 @@ type Client struct {
 	Id   string
 }
 
-func GenerateClientId() string {
+func generateClientId() string {
 	return (ksuid.New().String())
+}
+
+func NewClient(conn net.Conn) Client {
+	return Client{
+		Conn: conn,
+		Id:   generateClientId(),
+	}
 }

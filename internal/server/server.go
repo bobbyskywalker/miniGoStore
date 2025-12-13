@@ -51,7 +51,7 @@ func (s *Server) StartServ(port string) {
 func (s *Server) handleClient(conn net.Conn) {
 	defer conn.Close()
 
-	cli := client.Client{Conn: conn, Id: client.GenerateClientId()}
+	cli := client.NewClient(conn)
 	log.Println("Client " + cli.Id + " connected")
 	buf := make([]byte, MsgBufSize)
 
