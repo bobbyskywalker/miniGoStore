@@ -1,7 +1,7 @@
 package store
 
 import (
-	"log"
+	"log/slog"
 	"time"
 )
 
@@ -9,7 +9,7 @@ const NumKeysToClean = 10
 
 func (s *Store) StartCleaner() {
 	go func() {
-		log.Println("Cleaner routine started")
+		slog.Info("Cleaner routine started")
 		ticker := time.NewTicker(200 * time.Millisecond)
 		defer ticker.Stop()
 
@@ -27,7 +27,7 @@ func (s *Store) StartCleaner() {
 					if entry.HasExpiry && time.Now().After(entry.ExpiresAt) {
 						delete(s.data, k)
 						delete(s.ttlKeys, k)
-						log.Printf("Cleaner: removed key: %s", k)
+						slog.Info("Cleaner: removed key", slog.String("key", k))
 					}
 					break
 				}

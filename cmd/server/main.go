@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
+	"miniGoStore/internal/logger"
 	"miniGoStore/internal/server"
 	"os"
 )
@@ -20,6 +22,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	logger.InitLogger(slog.LevelInfo)
 	s := server.NewServer()
 	s.StartServ(port)
 }
