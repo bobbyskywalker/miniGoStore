@@ -1,13 +1,13 @@
 package executor
 
 import (
-	"log"
+	"log/slog"
 	"net"
 )
 
 func SendMessage(conn net.Conn, msg string) {
 	_, err := conn.Write([]byte(msg + "\n"))
 	if err != nil {
-		log.Println("Error: cannot send message to: ", conn.LocalAddr())
+		slog.Error("Error: cannot send message", slog.String("target", (conn.LocalAddr().String())))
 	}
 }

@@ -1,6 +1,7 @@
 package executor
 
 import (
+	"log/slog"
 	"miniGoStore/internal/client"
 	"miniGoStore/internal/replies"
 	"miniGoStore/internal/store"
@@ -10,6 +11,8 @@ import (
 type SetCommand struct{}
 
 func (SetCommand) Execute(cli client.Client, args []string, store *store.Store) {
+	defer slog.Info("Command completed", slog.String("clientId", cli.Id), "command", "SET")
+
 	var key string
 	var val []byte
 	var setOnExistent bool = false

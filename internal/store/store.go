@@ -1,7 +1,7 @@
 package store
 
 import (
-	"log"
+	"log/slog"
 	"miniGoStore/internal/replies"
 	"sync"
 	"time"
@@ -29,6 +29,8 @@ func NewStore() *Store {
 func (s *Store) Get(key string) (ValueEntry, bool) {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
+
+	defer slog.Info("Retrieved key", slog.String("key", key))
 
 	v, ok := s.data[key]
 	return v, ok
@@ -78,6 +80,8 @@ func (s *Store) Set(
 		return oldValue
 	}
 
+	slog.Debug("Set new key", slog.String("key", key))
+
 	return []byte(replies.SetSuccessReply)
 }
 
@@ -85,18 +89,20 @@ func (s *Store) SetEx(key string, ttl *time.Time, persist bool) (ValueEntry, boo
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
+	defer slog.Debug("Retrieved key", slog.String("key", key))
+
 	oldEntry, exists := s.data[key]
 
 	if exists && ttl != nil {
 		oldEntry.ExpiresAt = *ttl
 		oldEntry.HasExpiry = true
 		s.ttlKeys[key] = struct{}{}
-		log.Printf("Set new expiration time for key: %s\n", key)
+		slog.Debug("Set new expiration time for key", slog.String("key", key))
 	}
 	if exists && persist {
 		oldEntry.HasExpiry = false
 		delete(s.ttlKeys, key)
-		log.Printf("Removed expiration date for key: %s\n", key)
+		slog.Debug("Removed expiration date for key", slog.String("key", key))
 	}
 	s.data[key] = oldEntry
 
@@ -106,6 +112,8 @@ func (s *Store) SetEx(key string, ttl *time.Time, persist bool) (ValueEntry, boo
 func (s *Store) Exists(key string) int {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
+
+	defer slog.Debug("Checked for existence", slog.String("key", key))
 
 	_, ok := s.data[key]
 	if ok {
@@ -128,12 +136,17 @@ func (s *Store) Del(keys []string) int {
 			totalDeleted++
 		}
 	}
+
+	slog.Debug("Deleted keys", slog.Int("total", totalDeleted))
+
 	return totalDeleted
 }
 
 func (s *Store) CheckTtl(key string) int {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
+
+	defer slog.Debug("Retrieved TTL for key", slog.String("key", key))
 
 	v, ok := s.data[key]
 	if !ok {
