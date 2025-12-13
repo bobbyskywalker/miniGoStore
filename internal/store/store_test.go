@@ -226,3 +226,36 @@ func TestDel_DeletesExistentKeys(t *testing.T) {
 		t.Fatalf("del should delete two existent keys")
 	}
 }
+
+func TestBasicSetEx(t *testing.T) {
+	store := NewStore()
+
+	ttl := time.Now().Add(10 * time.Second)
+	store.data["key"] = ValueEntry{Value: []byte("val"), ExpiresAt: ttl, HasExpiry: true}
+
+	newTtl := time.Now().Add(20 * time.Second)
+	_, ok := store.SetEx("key", &newTtl, false)
+	if !ok {
+		t.Fatalf("setex should return the value")
+	}
+
+	if store.data["key"].ExpiresAt != newTtl {
+		t.Fatalf("Setex should update expiration time")
+	}
+}
+
+func TestSetExPersistShouldRmTtl(t *testing.T) {
+	store := NewStore()
+
+	ttl := time.Now().Add(10 * time.Second)
+	store.data["key"] = ValueEntry{Value: []byte("val"), ExpiresAt: ttl, HasExpiry: true}
+
+	_, ok := store.SetEx("key", nil, true)
+	if !ok {
+		t.Fatalf("setex should return the value")
+	}
+
+	if store.data["key"].HasExpiry {
+		t.Fatalf("Setex should make hasexpiry false for key")
+	}
+}
