@@ -1,8 +1,11 @@
 package replies
 
 const (
-	PongReply       = "PONG"
-	SetSuccessReply = "OK"
-	SetFailReply    = "(nil)"
-	NotFoundReply   = "(nil)"
+	PongReply            = "PONG"
+	SuccessReply         = "OK"
+	SetFailReply         = "(nil)"
+	NotFoundReply        = "(nil)"
+	RedundantAuthReply   = "Already authenticated"
+	InvalidPasswordReply = "Invalid Password"
+	UnauthorizedReply    = "Unauthorized"
 )

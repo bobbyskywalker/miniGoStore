@@ -6,6 +6,7 @@ const (
 	ErrUnknownCommand ErrorCode = iota
 	ErrInvalidArgs
 	ErrSyntaxError
+	ErrInvalidPassword
 )
 
 type AppError struct {
@@ -31,5 +32,10 @@ var (
 	SyntaxError = &AppError{
 		Code:    ErrSyntaxError,
 		Message: "ERR: syntax error",
+	}
+
+	InvalidPassword = &AppError{
+		Code:    ErrInvalidPassword,
+		Message: "ERR: invalid password",
 	}
 )

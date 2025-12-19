@@ -82,7 +82,7 @@ func (s *Store) Set(
 
 	slog.Debug("Set new key", slog.String("key", key))
 
-	return []byte(replies.SetSuccessReply)
+	return []byte(replies.SuccessReply)
 }
 
 func (s *Store) SetEx(key string, ttl *time.Time, persist bool) (ValueEntry, bool) {

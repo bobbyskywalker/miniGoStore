@@ -30,7 +30,7 @@ func TestBasicSet(t *testing.T) {
 	store := NewStore()
 
 	rpl := store.Set("key", []byte("value"), false, false, nil, false)
-	if !bytes.Equal(rpl, []byte(replies.SetSuccessReply)) {
+	if !bytes.Equal(rpl, []byte(replies.SuccessReply)) {
 		t.Errorf("Incorrect result: SET on empty store did not send OK reply")
 	}
 
@@ -64,7 +64,7 @@ func TestSet_NX_OnMissingKey_Succeeds(t *testing.T) {
 
 	// NX /w missing key
 	rpl := store.Set("key", []byte("value"), false, true, nil, false)
-	if !bytes.Equal(rpl, []byte(replies.SetSuccessReply)) {
+	if !bytes.Equal(rpl, []byte(replies.SuccessReply)) {
 		t.Fatalf("expected OK reply for NX on missing key, got %q", rpl)
 	}
 
@@ -97,7 +97,7 @@ func TestSet_XX_OnExistingKey_SucceedsAndOverwrites(t *testing.T) {
 
 	// XX with existing key
 	rpl := store.Set("key", []byte("new"), true, false, nil, false)
-	if !bytes.Equal(rpl, []byte(replies.SetSuccessReply)) {
+	if !bytes.Equal(rpl, []byte(replies.SuccessReply)) {
 		t.Fatalf("expected OK reply for XX on existing key, got %q", rpl)
 	}
 
@@ -115,7 +115,7 @@ func TestSet_WithTTL_SetsExpiryAndMarksTTLKey(t *testing.T) {
 	exp := time.Now().Add(5 * time.Minute)
 
 	rpl := store.Set("key", []byte("value"), false, false, &exp, false)
-	if !bytes.Equal(rpl, []byte(replies.SetSuccessReply)) {
+	if !bytes.Equal(rpl, []byte(replies.SuccessReply)) {
 		t.Fatalf("expected OK reply, got %q", rpl)
 	}
 
@@ -142,7 +142,7 @@ func TestSet_WithoutTTL_ClearsExistingExpiryAndTTLKey(t *testing.T) {
 	store.Set("key", []byte("old"), false, false, &exp, false)
 
 	rpl := store.Set("key", []byte("new"), false, false, nil, false)
-	if !bytes.Equal(rpl, []byte(replies.SetSuccessReply)) {
+	if !bytes.Equal(rpl, []byte(replies.SuccessReply)) {
 		t.Fatalf("expected OK reply, got %q", rpl)
 	}
 

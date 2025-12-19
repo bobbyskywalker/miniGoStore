@@ -16,12 +16,14 @@ const MsgBufSize = 1024
 type Server struct {
 	numClients int32
 	storage    *store.Store
+	authHash   []byte
 }
 
-func NewServer() *Server {
+func NewServer(hash []byte) *Server {
 	return &Server{
 		numClients: 0,
 		storage:    store.NewStore(),
+		authHash:   hash,
 	}
 }
 
@@ -67,6 +69,6 @@ func (s *Server) handleClient(conn net.Conn) {
 			return
 		}
 		slog.Debug("Received data", slog.String("clientId", cli.Id), slog.String("payload", string(buf[:nbytes])))
-		parser.ParseCommand(cli, buf[:nbytes], s.storage)
+		parser.ParseCommand(cli, buf[:nbytes], s.storage, s.authHash)
 	}
 }
