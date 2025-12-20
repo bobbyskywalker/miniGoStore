@@ -27,7 +27,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 	logger.InitLogger(slog.LevelInfo)
 	s := server.NewServer(hash)
 	s.StartServ(port)
